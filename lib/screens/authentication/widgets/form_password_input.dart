@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
+import 'package:mediaconsumptiontracker/utils/validate.dart';
 
-class FormInput extends StatelessWidget {
-  final Color _borderColor;
-  final bool _obscure;
-  final TextEditingController _controller;
-  final String _hint;
+class FormPasswordInput extends StatelessWidget {
+  final Color borderColor;
+  final bool obscure;
+  final TextEditingController controller;
+  final String hint;
 
-
-  FormInput({Color borderColor, bool obscure, TextEditingController controller, String hint}) :
-        _borderColor = borderColor, _obscure = obscure, _controller = controller, _hint = hint;
+  FormPasswordInput({this.borderColor, this.obscure, this.controller, this.hint});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class FormInput extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-              color: _borderColor,
+              color: borderColor,
               width: 0.5,
               style: BorderStyle.solid
           ),
@@ -33,15 +32,18 @@ class FormInput extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: TextFormField(
-              obscureText: _obscure,
-              controller: _controller,
+              obscureText: obscure,
+              controller: controller,
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: _hint,
+                hintText: hint,
                 hintStyle: TextStyle(color: Colors.grey),
               ),
-              // autovalidate: true,
+              autovalidate: true,
               autocorrect: false,
+              validator: (value) {
+                return !Validators.isValidPassword(value) ? 'Invalid Password' : null;
+              }
             ),
           ),
         ],

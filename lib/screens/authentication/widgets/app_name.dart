@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AppName extends StatelessWidget {
-  final Color _textColor;
-  final double _fontSize;
+  final Color textColor;
+  final double fontSize;
 
-  AppName({Color textColor, double fontSize}) :
-        _textColor = textColor,
-        _fontSize = fontSize;
+  AppName({this.textColor, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +16,22 @@ class AppName extends StatelessWidget {
           Text(
             "Media",
             style: TextStyle(
-              color: _textColor,
-              fontSize: _fontSize,
+              color: textColor,
+              fontSize: fontSize,
             ),
           ),
           Text(
             "Consumption",
             style: TextStyle(
-                color: _textColor,
-                fontSize: _fontSize,
+                color: textColor,
+                fontSize: fontSize,
                 fontWeight: FontWeight.bold),
           ),
           Text(
             "Tracker",
             style: TextStyle(
-              color: _textColor,
-              fontSize: _fontSize,
+              color: textColor,
+              fontSize: fontSize,
             ),
           ),
         ],

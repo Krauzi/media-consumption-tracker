@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class FormLabel extends StatelessWidget {
-  final String _text;
-  final Color _textColor;
-  final IconData _icon;
+  final String text;
+  final Color textColor;
+  final IconData icon;
 
 
-  FormLabel({String text, Color textColor, IconData icon}) :
-        _text = text, _textColor = textColor, _icon = icon;
+  FormLabel({this.text, this.textColor, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +18,14 @@ class FormLabel extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Icon(
-                  _icon,
+                  icon,
                   size: 15.0,
                 ),
                 SizedBox(width: 8),
-                Text(_text.toUpperCase(),
+                Text(text.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: _textColor,
+                    color: textColor,
                     fontSize: 16.0,
                   ),
                 ),

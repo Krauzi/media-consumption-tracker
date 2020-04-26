@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
+typedef void OnClick();
+
 class FormButton extends StatelessWidget {
 
-  final String _text;
-  final Color _color;
-  final Color _textColor;
-  final VoidCallback _onPressed;
+  final String text;
+  final Color color;
+  final Color textColor;
+  final OnClick onPressed;
 
-  FormButton({String text, Color color, Color textColor, VoidCallback onPressed}) :
-        _text = text, _color = color, _textColor = textColor, _onPressed = onPressed;
+  FormButton({this.text, this.color, this.textColor, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,8 @@ class FormButton extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
               ),
-              color: _color,
-              onPressed: _onPressed,
+              color: color,
+              onPressed: onPressed,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 20.0,
@@ -35,7 +36,7 @@ class FormButton extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        _text.toUpperCase(),
+                        text.toUpperCase(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.white,
