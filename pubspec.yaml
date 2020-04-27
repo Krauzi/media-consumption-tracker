@@ -25,6 +25,7 @@ dependencies:
   equatable: ^1.1.1
 
   flutter_spinkit: ^4.1.2+1
+  bottom_navy_bar: ^5.4.0
   font_awesome_flutter: ^8.8.1
 
 dev_dependencies:
@@ -39,3 +40,8 @@ flutter:
   assets:
     - assets/mct_logo_black.png
     - assets/mct_logo_white.png
+    - assets/icons/
+  fonts:
+    - family:  MyFlutterApp
+      fonts:
+        - asset: fonts/MyFlutterApp.ttf

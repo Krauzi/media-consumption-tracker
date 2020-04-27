@@ -10,13 +10,10 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
 
-  AuthBloc _authBloc;
-
   @override
   void initState() {
     super.initState();
 
-    _authBloc = BlocProvider.getBloc();
   }
 
   @override
@@ -24,29 +21,15 @@ class _HomeContentState extends State<HomeContent> {
     return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: applicationColors['maize'],
+        color: applicationColors['white'],
       ),
-      child: Stack(
-        children: <Widget>[
-          _logOut()
-        ],
-      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+
+          ],
+        ),
+      )
     );
   }
-
-  Widget _logOut() => Positioned (
-    top: 8, left: 8,
-    child: SafeArea(
-      child: Material(
-        color: Colors.transparent,
-        child: IconButton(
-          icon: Icon(Icons.exit_to_app, color: applicationColors['pink'], size: 24.0,),
-          onPressed: () {
-            _authBloc.logOut();
-            Navigator.of(context).pushReplacementNamed('/login');
-          }
-        ),
-      ),
-    ),
-  );
 }
