@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:cuberto_bottom_bar/cuberto_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/auth_bloc.dart';
-import 'package:mediaconsumptiontracker/screens/home/views/books_add.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/books_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/books_view.dart';
-import 'package:mediaconsumptiontracker/screens/home/views/games_add.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/games_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_view.dart';
-import 'package:mediaconsumptiontracker/screens/home/views/movies_add.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/movies_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/app_drawer.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/custom_fab.dart';
@@ -19,77 +22,86 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin  {
+
+  AuthBloc _authBloc;
+
+  StreamSubscription _currentUser;
+  String userId;
+
+  TabController tabBarController;
+  List<Tabs> tabs = new List();
 
   int _currentIndex = 0;
-  PageController _pageController;
-  AuthBloc _authBloc;
 
   @override
   void initState() {
     super.initState();
 
     _authBloc = BlocProvider.getBloc();
-    _pageController = PageController(initialPage: 0, viewportFraction: 1);
+
+    _currentUser = _authBloc.userLoggedObservable.listen((user) {
+      userId = user.uid;
+    });
+
+    tabs.add(Tabs(MyFlutterApp.games, "Games", Colors.deepPurple, getGradient(Colors.deepPurple)));
+    tabs.add(Tabs(MyFlutterApp.books, "Books", Colors.pink, getGradient(Colors.pink)));
+    tabs.add(Tabs(MyFlutterApp.movies, "Movies", Colors.amber, getGradient(Colors.amber)));
+
+    tabBarController = TabController(initialIndex: _currentIndex, length: 3, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: applicationColors['pink'],
         elevation: 0,
       ),
       floatingActionButton: _whichAdd(context, _currentIndex),
       drawer: AppDrawer(logout: _logOut,),
-      body: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-          children: <Widget>[
-            GamesView(),
-            BooksView(),
-            MoviesView()
-          ],
-        ),
-      bottomNavigationBar: BottomNavyBar(
-          backgroundColor: applicationColors['pink'],
-          selectedIndex: _currentIndex,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          onItemSelected: (index) {
-            setState(() => _currentIndex = index);
-            _pageController.jumpToPage(index);
-          },
-          items: _barItems,
+      body: StreamBuilder(
+        stream: _authBloc.userLoggedObservable,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return TabBarView(
+              controller: tabBarController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                GamesView(userId: userId),
+                BooksView(userId: userId),
+                MoviesView(userId: userId),
+              ],
+            );
+          } else return SpinKitChasingDots(
+              color: applicationColors['pink'],
+              size: MediaQuery.of(context).size.width * 0.2,
+          );
+        },
+      ),
+      bottomNavigationBar: CubertoBottomBar(
+        barBackgroundColor: applicationColors['pink'],
+        inactiveIconColor: applicationColors['white'],
+        tabStyle: CubertoTabStyle.STYLE_NORMAL,
+        textColor: applicationColors['black'],
+        selectedTab: _currentIndex,
+        tabs: tabs
+            .map((value) => TabData(
+            iconData: value.icon,
+            title: value.title,
+            tabColor: value.color,
+            tabGradient: value.gradient))
+            .toList(),
+        onTabChangedListener: (position, title, color) {
+          setState(() {
+            tabBarController.animateTo(position);
+            _currentIndex = position;
+          });
+        },
       ),
     );
   }
-
-  List<BottomNavyBarItem> _barItems = [
-    BottomNavyBarItem(
-        title: Text('Games'),
-        icon: Icon(MyFlutterApp.games),
-        activeColor: applicationColors['black'],
-        inactiveColor: applicationColors['white'],
-        textAlign: TextAlign.center
-    ),
-    BottomNavyBarItem(
-        title: Text('Books'),
-        icon: Icon(MyFlutterApp.books),
-        activeColor: applicationColors['black'],
-        inactiveColor: applicationColors['white'],
-        textAlign: TextAlign.center
-    ),
-    BottomNavyBarItem(
-        title: Text('Movies'),
-        icon: Icon(MyFlutterApp.movies),
-        activeColor: applicationColors['black'],
-        inactiveColor: applicationColors['white'],
-        textAlign: TextAlign.center
-    ),
-  ];
 
   void _logOut() {
     _authBloc.logOut();
@@ -102,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.add,
         onPressed: () => showDialog(
             context: context,
-            builder: (_) => GamesAdd()
+            builder: (_) => GamesEdit(userId: userId, buttonText: "Add game",)
         )
       );
     } else if (page == 1) {
@@ -110,15 +122,38 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icons.add,
           onPressed: () => showDialog(
               context: context,
-              builder: (_) => BooksAdd()
+              builder: (_) => BooksEdit(userId: userId, buttonText: "Add book")
           )
       );
     } else {
       return CustomFAB(
           icon: Icons.search,
           onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MoviesAdd()))
+              MaterialPageRoute(builder: (context) => MoviesEdit()))
       );
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _currentUser.cancel();
+  }
 }
+
+
+
+class Tabs {
+  final IconData icon;
+  final String title;
+  final Color color;
+  final Gradient gradient;
+
+  Tabs(this.icon, this.title, this.color, this.gradient);
+}
+
+  getGradient(Color color) {
+    return LinearGradient(
+        colors: [color.withOpacity(0.5), color.withOpacity(0.1)],
+        stops: [0.0, 0.7]);
+  }

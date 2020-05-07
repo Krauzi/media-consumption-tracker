@@ -25,8 +25,10 @@ class _State extends State<SplashScreen> {
 
     _authSubscription = _authBloc.userLoggedObservable.listen((user) {
       if(user == null) {
+        debugPrint("USER VALUE: " + user.toString());
         Navigator.of(context).pushReplacementNamed('/login');
       } else {
+        debugPrint("USERID: " + user.uid);
         Navigator.of(context).pushReplacementNamed('/home');
       }
     });

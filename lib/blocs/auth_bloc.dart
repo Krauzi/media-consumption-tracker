@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mediaconsumptiontracker/repositories/auth_repository.dart';
@@ -11,7 +9,9 @@ class AuthBloc extends BlocBase {
   AuthBloc(this._authRepository);
 
   BehaviorSubject<FirebaseUser> _userLoggedSubject = BehaviorSubject();
-  Stream<FirebaseUser> get userLoggedObservable => _userLoggedSubject.stream;
+  Stream<FirebaseUser> get userLoggedObservable => _userLoggedSubject.stream.distinct(
+      (a, b) => a?.uid == b?.uid
+  );
 
   PublishSubject<FirebaseUser> _loginSubject = PublishSubject();
   Stream<FirebaseUser> get loginObservable => _loginSubject.stream;
@@ -25,16 +25,27 @@ class AuthBloc extends BlocBase {
   }
 
   Future login({String email, String password}) async {
-    _authRepository.loginWithCredentials(
-        email: email, password: password)
-        .then(_loginSubject.add)
-        .catchError((_) => _loginSubject.add(null));
+    try {
+      final user = await _authRepository.loginWithCredentials(
+          email: email, password: password);
+      _userLoggedSubject.add(user);
+      _loginSubject.add(user);
+    } catch (e) {
+      _userLoggedSubject.add(null);
+      _loginSubject.add(null);
+    }
   }
 
   Future signUp({String email, String password}) async {
-    _authRepository.registerUser(email: email, password: password)
-        .then(_signUpSubject.add)
-        .catchError((_) => _signUpSubject.add(null));
+    try {
+      final user = await _authRepository.registerUser(
+          email: email, password: password);
+      _userLoggedSubject.add(user);
+      _signUpSubject.add(user);
+    } catch (e) {
+      _userLoggedSubject.add(null);
+      _signUpSubject.add(null);
+    }
   }
 
   Future logOut() async {

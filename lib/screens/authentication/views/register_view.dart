@@ -185,6 +185,9 @@ class _RegisterViewState extends State<RegisterView> {
   void dispose() {
     super.dispose();
     _authSubscription.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _passwordRepeatController.dispose();
   }
 
   void failedLoginDialog() {

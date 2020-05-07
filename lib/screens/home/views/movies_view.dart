@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 
 class MoviesView extends StatefulWidget {
+  final String userId;
+
+  MoviesView({this.userId});
+
   @override
   _MoviesViewState createState() => _MoviesViewState();
 }

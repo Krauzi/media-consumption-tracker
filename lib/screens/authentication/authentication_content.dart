@@ -63,4 +63,10 @@ class _AuthenticationContentState extends State<AuthenticationContent>
       curve: Curves.fastOutSlowIn,
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 }

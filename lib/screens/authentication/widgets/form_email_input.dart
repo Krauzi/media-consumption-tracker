@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 import 'package:mediaconsumptiontracker/utils/validate.dart';
 
 class FormEmailInput extends StatelessWidget {

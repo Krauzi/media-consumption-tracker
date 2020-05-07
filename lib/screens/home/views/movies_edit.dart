@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 
-class MoviesAdd extends StatefulWidget {
+class MoviesEdit extends StatefulWidget {
   @override
-  _MoviesAddState createState() => _MoviesAddState();
+  _MoviesEditState createState() => _MoviesEditState();
 }
 
-class _MoviesAddState extends State<MoviesAdd> {
+class _MoviesEditState extends State<MoviesEdit> {
   @override
   Widget build(BuildContext context) {
     return Container(

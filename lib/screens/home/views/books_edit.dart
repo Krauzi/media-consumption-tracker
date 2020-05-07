@@ -1,18 +1,31 @@
+import 'dart:async';
+
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
+import 'package:mediaconsumptiontracker/data/book.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/add_form_field.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/process_button.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
+import 'package:mediaconsumptiontracker/utils/string_extensions.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/custom_dialog.dart' as customDialog;
+import 'package:toast/toast.dart';
 
 
-class BooksAdd extends StatefulWidget {
+class BooksEdit extends StatefulWidget {
+  final String userId;
+  final String buttonText;
+
+  BooksEdit({this.userId, this.buttonText});
+
+
   @override
-  _BooksAddState createState() => _BooksAddState();
+  _BooksEditState createState() => _BooksEditState();
 }
 
-class _BooksAddState extends State<BooksAdd>
+class _BooksEditState extends State<BooksEdit>
     with SingleTickerProviderStateMixin {
 
   TextEditingController _bookName;
@@ -29,6 +42,9 @@ class _BooksAddState extends State<BooksAdd>
     "Audio",
   ];
 
+  RldbBloc _rldbBloc;
+  StreamSubscription _objectAddSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +54,24 @@ class _BooksAddState extends State<BooksAdd>
 
     _dropDownFormatItems = getDropDownMenuItems();
     _currentFormat = _dropDownFormatItems[0].value;
+
+    _rldbBloc = BlocProvider.getBloc();
+
+    List<String> text = widget.buttonText.toLowerCase().split(" ");
+
+    _objectAddSubscription = _rldbBloc.objectEditResponseObservable.listen((response) {
+      if (response == false) {
+        Toast.show("Failed to ${text[0]} a ${text[1]}",
+            context, duration: Toast.LENGTH_LONG,
+            gravity: Toast.BOTTOM);
+        Navigator.pop(context);
+      } else {
+        Toast.show("${text[1].capitalize()} successfully ${text[0].toLowerCase()}ed",
+            context, duration: Toast.LENGTH_LONG,
+            gravity:  Toast.BOTTOM);
+        Navigator.pop(context);
+      }
+    });
   }
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -151,14 +185,31 @@ class _BooksAddState extends State<BooksAdd>
                     ],
                   ),
                 ) : new Container(),
-                ProcessButton(
-                  text: "Add book",
-                  color: applicationColors['pink'],
-                  textColor: applicationColors['white'],
-                  onPressed: () => Navigator.pop(context),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 14.0
+                Container(
+                  child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: ProcessButton(
+                            text: widget.buttonText,
+                            color: applicationColors['pink'],
+                            textColor: applicationColors['white'],
+                            onPressed: () { _sendData(); },
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                          ),
+                        ),
+                        Expanded(flex: 0, child: Container(width: 8.0)),
+                        Expanded(
+                          flex: 1,
+                          child: ProcessButton(
+                            text: "Cancel",
+                            color: applicationColors['grey'],
+                            textColor: applicationColors['white'],
+                            onPressed: () { Navigator.pop(context); },
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                          ),
+                        ),
+                      ]
                   ),
                 )
               ]
@@ -184,4 +235,25 @@ class _BooksAddState extends State<BooksAdd>
             setState(() => _selectedDate = date);
           },
           currentTime: DateTime.now(), locale: LocaleType.en);
+
+  void _sendData() {
+    if (_bookName.text != "") {
+      Book book = Book(_bookName.text, _author.text, _isFinished, _selectedDate);
+      if (widget.buttonText == "Add book") {
+        _rldbBloc.addBook(userId: widget.userId, book: book);
+      } else {
+
+      }
+    } else {
+      Toast.show("Insert book name", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bookName.dispose();
+    _author.dispose();
+    _objectAddSubscription.cancel();
+  }
 }
