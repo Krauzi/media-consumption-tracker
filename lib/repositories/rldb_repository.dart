@@ -71,14 +71,4 @@ class RldbRepository {
       return false;
     }
   }
-
-  Future<Query> queryGames({String userId}) async {
-    return _database.reference()
-        .child("db").child(userId).child("games");
-  }
-
-  Future<Query> queryBook({String userId}) async {
-    return _database.reference()
-        .child("db").child(userId).child("books");
-  }
 }

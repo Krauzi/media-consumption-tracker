@@ -17,8 +17,9 @@ import 'package:toast/toast.dart';
 class BooksEdit extends StatefulWidget {
   final String userId;
   final String buttonText;
+  final Book book;
 
-  BooksEdit({this.userId, this.buttonText});
+  BooksEdit({this.userId, this.buttonText, this.book});
 
 
   @override
@@ -31,8 +32,8 @@ class _BooksEditState extends State<BooksEdit>
   TextEditingController _bookName;
   TextEditingController _author;
 
-  bool _isFinished = false;
-  DateTime _selectedDate = DateTime.now();
+  bool _isFinished;
+  DateTime _selectedDate;
 
   List<DropdownMenuItem<String>> _dropDownFormatItems;
   String _currentFormat;
@@ -45,6 +46,8 @@ class _BooksEditState extends State<BooksEdit>
   RldbBloc _rldbBloc;
   StreamSubscription _objectAddSubscription;
 
+  List<String> text;
+
   @override
   void initState() {
     super.initState();
@@ -55,9 +58,23 @@ class _BooksEditState extends State<BooksEdit>
     _dropDownFormatItems = getDropDownMenuItems();
     _currentFormat = _dropDownFormatItems[0].value;
 
+    if (widget.book == null) {
+      _bookName = TextEditingController();
+      _author = TextEditingController();
+      _currentFormat = _dropDownFormatItems[0].value;
+      _isFinished = false;
+      _selectedDate = DateTime.now();
+    } else {
+      _bookName = TextEditingController(text: widget.book.name);
+      _author = TextEditingController(text: widget.book.author);
+      _currentFormat = widget.book.format;
+      _isFinished = widget.book.finished;
+      _selectedDate = widget.book.time;
+    }
+
     _rldbBloc = BlocProvider.getBloc();
 
-    List<String> text = widget.buttonText.toLowerCase().split(" ");
+    text = widget.buttonText.toLowerCase().split(" ");
 
     _objectAddSubscription = _rldbBloc.objectEditResponseObservable.listen((response) {
       if (response == false) {
@@ -90,7 +107,7 @@ class _BooksEditState extends State<BooksEdit>
           child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text("Add new book",
+                Text("${text[0].capitalize()} a ${text[1]}",
                   style: TextStyle(
                       color: applicationColors['black'],
                       fontSize: 22.0,
@@ -120,7 +137,7 @@ class _BooksEditState extends State<BooksEdit>
                           items: _dropDownFormatItems,
                           onChanged: changedDropDownItem,
                           decoration: InputDecoration(
-                            labelText: "Select platform",
+                            labelText: "Select Formats",
                             contentPadding: EdgeInsets.fromLTRB(12.0, 2.0, 12.0, 2.0),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(6.0),
@@ -238,11 +255,20 @@ class _BooksEditState extends State<BooksEdit>
 
   void _sendData() {
     if (_bookName.text != "") {
-      Book book = Book(_bookName.text, _author.text, _isFinished, _selectedDate);
-      if (widget.buttonText == "Add book") {
-        _rldbBloc.addBook(userId: widget.userId, book: book);
+      if (widget.buttonText == "Add book"){
+        Book _newBook = Book(
+            _bookName.text.capitalize(), _author.text.capitalize(),
+            _currentFormat, _isFinished, _selectedDate
+        );
+        _rldbBloc.addBook(userId: widget.userId, book: _newBook);
       } else {
-
+        Book _newBook = widget.book;
+        _newBook.name = _bookName.text.capitalize();
+        _newBook.author = _author.text.capitalize();
+        _newBook.format = _currentFormat;
+        _newBook.finished = _isFinished;
+        _newBook.time = _selectedDate;
+        _rldbBloc.editBook(userId: widget.userId, book: _newBook);
       }
     } else {
       Toast.show("Insert book name", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);

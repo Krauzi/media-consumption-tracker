@@ -8,7 +8,7 @@ class Book {
   bool finished;
   DateTime time;
 
-  Book(this.name, this.author, this.finished, this.time);
+  Book(this.name, this.author, this.format, this.finished, this.time);
 
   Book.fromSnapshot(DataSnapshot snapshot) :
         key = snapshot.key,
@@ -16,7 +16,7 @@ class Book {
         author = snapshot.value["author"],
         format = snapshot.value["format"],
         finished = snapshot.value["finished"],
-        time = DateTime.fromMillisecondsSinceEpoch(snapshot.value["time"]);
+        time = DateTime.fromMillisecondsSinceEpoch(snapshot.value["time"] * -1);
 
   toJson() {
     return {
@@ -24,7 +24,7 @@ class Book {
       "author": author,
       "format": format,
       "finished": finished,
-      "time": time.millisecondsSinceEpoch,
+      "time": time.millisecondsSinceEpoch * -1,
     };
   }
 
@@ -34,7 +34,7 @@ class Book {
       "author": author,
       "format": format,
       "finished": finished,
-      "time": time.millisecondsSinceEpoch
+      "time": time.millisecondsSinceEpoch * -1,
     };
   }
 }

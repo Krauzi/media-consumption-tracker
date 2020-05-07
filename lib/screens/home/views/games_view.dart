@@ -4,13 +4,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/game.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/game_card.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
-
-import 'games_edit.dart';
 
 class GamesView extends StatefulWidget {
   final String userId;
@@ -27,7 +24,6 @@ class _GamesViewState extends State<GamesView> {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  Map<String, Query> _gameQueries;
   Query _gameQuery;
 
   @override
