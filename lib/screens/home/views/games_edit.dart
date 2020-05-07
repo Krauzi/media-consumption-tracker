@@ -54,7 +54,7 @@ class GamesEditState extends State<GamesEdit>
     _dropDownPlatformItems = getDropDownMenuItems();
 
     if (widget.game == null) {
-      _gameName = TextEditingController(text: '');
+      _gameName = TextEditingController();
       _currentPlatform = _dropDownPlatformItems[0].value;
       _isFinished = false;
       _selectedDate = DateTime.now();

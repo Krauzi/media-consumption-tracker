@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cuberto_bottom_bar/cuberto_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/auth_bloc.dart';
@@ -55,12 +56,8 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: applicationColors['pink'],
-        elevation: 0,
-      ),
       floatingActionButton: _whichAdd(context, _currentIndex),
-      drawer: AppDrawer(logout: _logOut,),
+      drawer: AppDrawer(logout: _logOut),
       body: StreamBuilder(
         stream: _authBloc.userLoggedObservable,
         builder: (context, snap) {

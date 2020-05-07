@@ -26,6 +26,11 @@ class RldbBloc extends BlocBase {
         .then(_objectEditResponseSubject.add);
   }
 
+  Future deleteGame({String userId, Game game}) async {
+    _rldbRepository.deleteGame(userId: userId, game: game)
+        .then(_objectEditResponseSubject.add);
+  }
+
   Future addBook({String userId, Book book}) async {
     _rldbRepository.addBook(userId: userId, book: book)
         .then(_objectEditResponseSubject.add);
@@ -33,6 +38,11 @@ class RldbBloc extends BlocBase {
 
   Future editBook({String userId, Book book}) async {
     _rldbRepository.editBook(userId: userId, book: book)
+        .then(_objectEditResponseSubject.add);
+  }
+
+  Future deleteBook({String userId, Book book}) async {
+    _rldbRepository.deleteBook(userId: userId, book: book)
         .then(_objectEditResponseSubject.add);
   }
 

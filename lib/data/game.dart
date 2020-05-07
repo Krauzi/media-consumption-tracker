@@ -14,7 +14,7 @@ class Game {
         name = snapshot.value["name"],
         platform = snapshot.value["platform"],
         finished = snapshot.value["finished"],
-        time = DateTime.fromMillisecondsSinceEpoch(snapshot.value["time"]);
+        time = DateTime.fromMillisecondsSinceEpoch(snapshot.value["time"] * -1);
 
 
   Game.fromMap(String key, Map<dynamic, dynamic> map) :
@@ -22,14 +22,14 @@ class Game {
         name = map["name"],
         platform = map["platform"],
         finished = map["finished"],
-        time = DateTime.fromMillisecondsSinceEpoch(map["time"]);
+        time = DateTime.fromMillisecondsSinceEpoch(map["time"] * -1);
 
   toJson() {
     return {
       "name": name,
       "platform": platform,
       "finished": finished,
-      "time": time.millisecondsSinceEpoch,
+      "time": time.millisecondsSinceEpoch * -1,
     };
   }
 
@@ -38,7 +38,7 @@ class Game {
       "name": name,
       "platform": platform,
       "finished": finished,
-      "time": time.millisecondsSinceEpoch,
+      "time": time.millisecondsSinceEpoch * -1,
     };
   }
 }

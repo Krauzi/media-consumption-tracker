@@ -29,6 +29,16 @@ class RldbRepository {
     }
   }
 
+  Future<bool> deleteGame({String userId, Game game}) async {
+    try {
+      _database.reference().child("db").child(userId)
+            .child("games").child(game.key).remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> addBook({String userId, Book book}) async {
     DatabaseReference reference = _database.reference()
         .child("db").child(userId).child("books").push();
@@ -46,6 +56,16 @@ class RldbRepository {
     try {
       _database.reference().child("db").child(userId)
           .child("books").child(book.key).set(book.toJson());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteBook({String userId, Book book}) async {
+    try {
+      _database.reference().child("db").child(userId)
+          .child("books").child(book.key).remove();
       return true;
     } catch (e) {
       return false;
