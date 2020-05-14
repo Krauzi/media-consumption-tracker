@@ -55,6 +55,7 @@ class _GamesViewState extends State<GamesView> {
           left: 0.0,
           right: 0.0,
           child: AppBar(
+            title: Text("Manage your games"),
             backgroundColor: applicationColors['pink'],
             elevation: 0.0,
             actions: <Widget>[

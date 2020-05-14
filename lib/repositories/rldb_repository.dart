@@ -1,6 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:mediaconsumptiontracker/data/apiclient/movie_client.dart';
 import 'package:mediaconsumptiontracker/data/book.dart';
 import 'package:mediaconsumptiontracker/data/game.dart';
+import 'package:mediaconsumptiontracker/data/movie.dart';
+import 'package:mediaconsumptiontracker/data/movies.dart';
+
+final String apiKey = 'af6de071';
 
 class RldbRepository {
 
@@ -69,6 +75,46 @@ class RldbRepository {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<Movies> getMovies(String title, String type, String year, int page) =>
+      apiClient.getQueryMovies(title, type, year, page, apiKey);
+
+  Future<List> addMovie({String userId, String id, int index}) async {
+    DatabaseReference reference = _database.reference()
+        .child("db").child(userId).child("movies").push();
+
+    try {
+      Movie movie = await apiClient.getSingleMovie(id, apiKey);
+      movie.finished = false;
+      movie.time = DateTime.now().millisecondsSinceEpoch * -1;
+      reference.set(movie.toJson());
+//      movie.key = reference.key;
+      return [movie, index, reference.key];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List> editMovie({String userId, Movie movie, String key, int index}) async {
+    try {
+      _database.reference().child("db").child(userId)
+          .child("movies").child(key).set(movie.toJson());
+
+      return [movie, index, key];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List> deleteMovie({String userId, Movie movie, String key, int index}) async {
+    try {
+      _database.reference().child("db").child(userId)
+          .child("movies").child(key).remove();
+      return [movie, index, key];
+    } catch (e) {
+      return [];
     }
   }
 }

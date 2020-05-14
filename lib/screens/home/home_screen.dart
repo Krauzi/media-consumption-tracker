@@ -11,6 +11,7 @@ import 'package:mediaconsumptiontracker/screens/home/views/books_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_edit.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/movies_search.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/app_drawer.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/custom_fab.dart';
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen>
       return CustomFAB(
           icon: Icons.search,
           onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MoviesEdit()))
+              MaterialPageRoute(builder: (context) => MoviesSearch()))
       );
     }
   }

@@ -104,7 +104,7 @@ class GamesEditState extends State<GamesEdit>
                   style: TextStyle(
                       color: applicationColors['black'],
                       fontSize: 22.0,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.w300
                   ),
                 ),
                 Divider(
@@ -146,7 +146,7 @@ class GamesEditState extends State<GamesEdit>
                     children: <Widget>[
                       Expanded(
                           flex: 2,
-                          child: Text("Game finished?",)
+                          child: Text("Game finished?", style: TextStyle(fontWeight: FontWeight.w300),)
                       ),
                       Expanded(
                           flex: 3,

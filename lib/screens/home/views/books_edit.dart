@@ -111,7 +111,7 @@ class _BooksEditState extends State<BooksEdit>
                   style: TextStyle(
                       color: applicationColors['black'],
                       fontSize: 22.0,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.w300
                   ),
                 ),
                 Divider(
@@ -157,7 +157,7 @@ class _BooksEditState extends State<BooksEdit>
                     children: <Widget>[
                       Expanded(
                           flex: 2,
-                          child: Text("Book finished?",)
+                          child: Text("Book finished?", style: TextStyle(fontWeight: FontWeight.w300),)
                       ),
                       Expanded(
                           flex: 3,

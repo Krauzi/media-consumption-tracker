@@ -21,18 +21,50 @@ class _MoviesViewState extends State<MoviesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
+    return Stack(
+      children: <Widget>[
+        Container(
           color: applicationColors['white'],
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-
+        Positioned(
+          top: 0.0,
+          left: 0.0,
+          right: 0.0,
+          child: AppBar(
+            backgroundColor: applicationColors['pink'],
+            elevation: 0.0,
+            actions: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Text("State", style: TextStyle(fontSize: 20.0))
+                  ),
+                ],
+              ),
+//              PopupMenuButton<String>(
+//                onSelected: choiceAction,
+//                itemBuilder: (BuildContext context){
+//                  return Constants.choices.map((String choice){
+//                    return PopupMenuItem<String>(
+//                      value: choice,
+//                      child: Text(choice),
+//                    );
+//                  }).toList();
+//                },
+//              )
             ],
           ),
-        )
+        ),
+        Positioned(
+          top: 80.0,
+          left: 0.0,
+          bottom: 0.0,
+          right: 0.0,
+          child: Container(),
+        ),
+      ],
     );
   }
 }

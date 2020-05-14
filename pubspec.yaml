@@ -44,6 +44,7 @@ flutter:
   assets:
     - assets/mct_logo_black.png
     - assets/mct_logo_white.png
+    - assets/movies_placeholder.png
     - assets/icons/
   fonts:
     - family:  MyFlutterApp

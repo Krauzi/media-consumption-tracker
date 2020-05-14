@@ -37,7 +37,7 @@ class ProcessButton extends StatelessWidget {
                         text.toUpperCase(), textAlign: TextAlign.center,
                         style: TextStyle(
                             color: textColor, fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
                   ],
