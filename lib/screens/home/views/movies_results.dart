@@ -2,20 +2,20 @@ import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/auth_bloc.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
-import 'package:mediaconsumptiontracker/data/movies.dart';
 import 'package:mediaconsumptiontracker/data/query_data.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/movies_query_card.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 
 class MoviesResults extends StatefulWidget {
   final List<Search> movies;
   final QueryData query;
+  final SearchType searchType;
 
-  MoviesResults({this.movies, this.query});
+  MoviesResults({this.movies, this.query, this.searchType});
 
   @override
   _MoviesResultsState createState() => _MoviesResultsState();
@@ -33,11 +33,18 @@ class _MoviesResultsState extends State<MoviesResults> {
   AuthBloc _authBloc;
   RldbBloc _rldbBloc;
 
+  Color _mainColor;
+
   ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.searchType == SearchType.MOVIE)
+      _mainColor = applicationColors['pink'];
+    else
+      _mainColor = applicationColors['blueish'];
 
     _scrollController = new ScrollController();
     _currentPage = widget.query.page;
@@ -78,7 +85,7 @@ class _MoviesResultsState extends State<MoviesResults> {
       child: Scaffold(
         body: Container(
           height: MediaQuery.of(context).size.height,
-          color: applicationColors['pink'],
+          color: _mainColor,
           child: SafeArea(
             child: Stack(
               children: <Widget>[
@@ -121,6 +128,16 @@ class _MoviesResultsState extends State<MoviesResults> {
                                 return MoviesQueryCard(movie: _movies[index], userId: userId, index: index);
                               }
                           ),
+//                          child: AnimatedList(
+//                              controller: _scrollController,
+//                              shrinkWrap: true,
+//                              scrollDirection: Axis.vertical,
+//                              initialItemCount: _movies.length,
+//                              itemBuilder: (context, index, animation) {
+//                                return MoviesQueryCard(movie: _movies[index], userId: userId,
+//                                    index: index, searchType: widget.searchType);
+//                              },
+//                          ),
                         ),
                       ),
                     ]

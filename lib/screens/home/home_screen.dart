@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/auth_bloc.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/books_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/books_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_edit.dart';
@@ -13,6 +14,7 @@ import 'package:mediaconsumptiontracker/screens/home/views/games_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_details.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_search.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_view.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/series_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/app_drawer.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/custom_fab.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
@@ -50,8 +52,9 @@ class _HomeScreenState extends State<HomeScreen>
     tabs.add(Tabs(MyFlutterApp.games, "Games", Colors.deepPurple, getGradient(Colors.deepPurple)));
     tabs.add(Tabs(MyFlutterApp.books, "Books", Colors.pink, getGradient(Colors.pink)));
     tabs.add(Tabs(MyFlutterApp.movies, "Movies", Colors.amber, getGradient(Colors.amber)));
+    tabs.add(Tabs(Icons.live_tv, "Series", Colors.deepOrangeAccent, getGradient(Colors.deepOrangeAccent)));
 
-    tabBarController = TabController(initialIndex: _currentIndex, length: 3, vsync: this);
+    tabBarController = TabController(initialIndex: _currentIndex, length: 4, vsync: this);
   }
 
   @override
@@ -70,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen>
                 GamesView(userId: userId),
                 BooksView(userId: userId),
                 MoviesView(userId: userId),
+                SeriesView(userId: userId),
               ],
             );
           } else return SpinKitChasingDots(
@@ -123,11 +127,17 @@ class _HomeScreenState extends State<HomeScreen>
               builder: (_) => BooksEdit(userId: userId, buttonText: "Add book")
           )
       );
+    } else if (page == 2) {
+      return CustomFAB(
+          icon: Icons.search,
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MoviesSearch(searchType: SearchType.MOVIE,)))
+      );
     } else {
       return CustomFAB(
           icon: Icons.search,
           onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MoviesSearch()))
+              MaterialPageRoute(builder: (context) => MoviesSearch(searchType: SearchType.SERIES,)))
       );
     }
   }

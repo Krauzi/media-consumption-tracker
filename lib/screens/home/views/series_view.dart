@@ -8,34 +8,35 @@ import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/movie_card.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 
-class MoviesView extends StatefulWidget {
+class SeriesView extends StatefulWidget {
   final String userId;
 
-  MoviesView({Key key, this.userId}) : super(key: key);
+  SeriesView({Key key, this.userId}) : super(key: key);
 
   @override
-  _MoviesViewState createState() => _MoviesViewState();
+  _SeriesViewState createState() => _SeriesViewState();
 }
 
-class _MoviesViewState extends State<MoviesView> {
+class _SeriesViewState extends State<SeriesView> {
   RldbBloc _rldbBloc;
+
+  SearchType _searchType;
 
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  Query _movieQuery;
-
-  SearchType _searchType;
+  Query _seriesQuery;
 
   @override
   void initState() {
     super.initState();
 
     _rldbBloc = BlocProvider.getBloc();
-    _searchType = SearchType.MOVIE;
 
-    _movieQuery = _database.reference()
-        .child("db").child(widget.userId).child("movies").orderByChild("time");
+    _searchType = SearchType.SERIES;
+
+    _seriesQuery = _database.reference()
+        .child("db").child(widget.userId).child("series").orderByChild("time");
   }
 
   String deletedKey;
@@ -52,7 +53,7 @@ class _MoviesViewState extends State<MoviesView> {
           left: 0.0,
           right: 0.0,
           child: AppBar(
-            title: Text("Movies"),
+            title: Text("Series"),
             backgroundColor: applicationColors['pink'],
             elevation: 0.0,
             actions: <Widget>[
@@ -85,8 +86,8 @@ class _MoviesViewState extends State<MoviesView> {
           bottom: 0.0,
           right: 0.0,
           child: FirebaseAnimatedList(
-            query: _movieQuery,
-            key: ValueKey(_movieQuery),
+            query: _seriesQuery,
+            key: ValueKey(_seriesQuery),
             itemBuilder: (BuildContext context, DataSnapshot snapshot,
                 Animation<double> animation, int index) {
               Movie _movie = Movie.fromSnapshot(snapshot);
@@ -97,13 +98,13 @@ class _MoviesViewState extends State<MoviesView> {
                   resizeDuration: Duration(milliseconds: 200),
                   key: Key(_movie.key),
                   onDismissed: (direction) async {
-                    _rldbBloc.deleteMovie(widget.userId, _movie, _movie.key, index, "movies");
+                    _rldbBloc.deleteMovie(widget.userId, _movie, _movie.key, index, "series");
 
                     deletedKey = _movie.key;
 
                     Scaffold.of(context).showSnackBar(
                         SnackBar(
-                            content: Text("Movie has been deleted.", textAlign: TextAlign.center)
+                            content: Text("Series has been deleted.", textAlign: TextAlign.center)
                         )
                     );
                   },
@@ -123,18 +124,18 @@ class _MoviesViewState extends State<MoviesView> {
   void choiceAction(String choice){
     if (choice == Constants.All) {
       setState(() {
-        _movieQuery = _database.reference()
-            .child("db").child(widget.userId).child("movies").orderByChild("time");
+        _seriesQuery = _database.reference()
+            .child("db").child(widget.userId).child("series").orderByChild("time");
       });
     } else if(choice == Constants.Finished) {
       setState(() {
-        _movieQuery = _database.reference()
-            .child("db").child(widget.userId).child("movies").orderByChild("finished").equalTo(true);
+        _seriesQuery = _database.reference()
+            .child("db").child(widget.userId).child("series").orderByChild("finished").equalTo(true);
       });
     } else if(choice == Constants.Unfinished) {
       setState(() {
-        _movieQuery = _database.reference()
-            .child("db").child(widget.userId).child("movies").orderByChild("finished").equalTo(false);
+        _seriesQuery = _database.reference()
+            .child("db").child(widget.userId).child("series").orderByChild("finished").equalTo(false);
       });
     }
   }

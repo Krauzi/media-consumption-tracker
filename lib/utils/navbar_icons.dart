@@ -24,4 +24,7 @@ class MyFlutterApp {
   static const IconData games = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData books = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData movies = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData television = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData reel = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData strip = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

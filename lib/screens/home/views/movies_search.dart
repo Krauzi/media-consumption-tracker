@@ -7,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/query_data.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_results.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/process_button.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/query_form_field.dart';
@@ -15,8 +16,9 @@ import 'package:toast/toast.dart';
 
 class MoviesSearch extends StatefulWidget {
   final String userId;
+  final SearchType searchType;
 
-  MoviesSearch({this.userId});
+  MoviesSearch({this.userId, this.searchType});
 
   @override
   _MoviesSearchState createState() => _MoviesSearchState();
@@ -29,13 +31,8 @@ class _MoviesSearchState extends State<MoviesSearch> {
 
   List<DropdownMenuItem<String>> _dropDownTypeItems;
   String _currentType;
-  List _types = [
-    "All",
-    "Movie",
-    "Series",
-    "Episode",
-    "Game"
-  ];
+
+  List _types = [];
 
 
   StreamSubscription _moviesSubscription;
@@ -45,6 +42,16 @@ class _MoviesSearchState extends State<MoviesSearch> {
   void initState() {
     super.initState();
     _rldbBloc = BlocProvider.getBloc();
+
+    if (widget.searchType == SearchType.SERIES) {
+      _types = [
+        "Series",
+        "Episode"
+      ];
+    } else {
+      _types = ["Movie"];
+    }
+
 
     _movieNameController = TextEditingController();
     _movieYearController = TextEditingController();
@@ -110,10 +117,11 @@ class _MoviesSearchState extends State<MoviesSearch> {
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: QueryFormField(label: "Insert title", textController: _movieNameController)
                     ),
-                    Padding(
+                    widget.searchType == SearchType.MOVIE ? Container(): Padding(
                         padding: EdgeInsets.only(left: 18.0, bottom: 6.0, top:  16.0),
                         child: Text("Select type", style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18.0))
                     ),
+                    widget.searchType == SearchType.MOVIE ? Container():
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: DropdownButtonFormField(
@@ -214,15 +222,15 @@ class _MoviesSearchState extends State<MoviesSearch> {
     if (!ModalRoute.of(context).isCurrent) return;
 
     QueryData _query;
-    if (_currentType == "All") {
-      _query = QueryData(_movieNameController.text, "", _movieYearController.text, 1);
-    } else {
+    if (widget.searchType == SearchType.SERIES) {
       _query = QueryData(_movieNameController.text, _currentType.toLowerCase(), _movieYearController.text, 1);
+    } else {
+      _query = QueryData(_movieNameController.text, "movie", _movieYearController.text, 1);
     }
 
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) =>
-            MoviesResults(movies: movies, query: _query))
+            MoviesResults(movies: movies, query: _query, searchType: widget.searchType,))
     ).then((_) {
       _moviesSubscription.cancel();
       _moviesSubscription = _rldbBloc.moviesObservable.listen(_showMovies);

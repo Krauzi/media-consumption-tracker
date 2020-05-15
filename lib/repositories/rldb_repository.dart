@@ -81,16 +81,15 @@ class RldbRepository {
   Future<Movies> getMovies(String title, String type, String year, int page) =>
       apiClient.getQueryMovies(title, type, year, page, apiKey);
 
-  Future<List> addMovie({String userId, String id, int index}) async {
+  Future<List> addMovie({String userId, String id, int index, String type}) async {
     DatabaseReference reference = _database.reference()
-        .child("db").child(userId).child("movies").push();
+        .child("db").child(userId).child(type).push();
 
     try {
       Movie movie = await apiClient.getSingleMovie(id, apiKey);
       movie.finished = false;
       movie.time = DateTime.now().millisecondsSinceEpoch * -1;
       reference.set(movie.toJson());
-      debugPrint("ANY CALL?");
 
       return [movie, index, reference.key];
     } catch (e) {
@@ -98,12 +97,13 @@ class RldbRepository {
     }
   }
 
-  Future<List> editMovie({String userId, Movie movie, String key, int index}) async {
+  Future<List> editMovie({String userId, Movie movie, String key, int index,
+    String type}) async {
     try {
       if (movie.time > 0 ) movie.time *= -1;
 
       _database.reference().child("db").child(userId)
-          .child("movies").child(key).set(movie.toJson());
+          .child(type).child(key).set(movie.toJson());
 
       return [movie, index, key];
     } catch (e) {
@@ -111,10 +111,11 @@ class RldbRepository {
     }
   }
 
-  Future<List> deleteMovie({String userId, Movie movie, String key, int index}) async {
+  Future<List> deleteMovie({String userId, Movie movie, String key, int index,
+    String type}) async {
     try {
       _database.reference().child("db").child(userId)
-          .child("movies").child(key).remove();
+          .child(type).child(key).remove();
       return [movie, index, key];
     } catch (e) {
       return [];

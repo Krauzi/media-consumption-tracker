@@ -82,18 +82,18 @@ class RldbBloc extends BlocBase {
   PublishSubject<List> _movieSubject = PublishSubject();
   Stream<List> get movieObservable => _movieSubject.stream;
 
-  Future addMovie(String userId, String id, int index) async {
-    _rldbRepository.addMovie(userId: userId, id: id, index: index)
+  Future addMovie(String userId, String id, int index, String type) async {
+    _rldbRepository.addMovie(userId: userId, id: id, index: index, type: type)
         .then(_movieSubject.add);
   }
 
-  Future editMovie(String userId, Movie movie, String key, int index) async {
-    _rldbRepository.editMovie(userId: userId, movie: movie, key: key, index: index)
+  Future editMovie(String userId, Movie movie, String key, int index, String type) async {
+    _rldbRepository.editMovie(userId: userId, movie: movie, key: key, index: index, type: type)
         .then(_movieSubject.add);
   }
 
-  Future deleteMovie(String userId, Movie movie, String key, int index) async {
-    _rldbRepository.deleteMovie(userId: userId, movie: movie, key: key, index: index)
+  Future deleteMovie(String userId, Movie movie, String key, int index, String type) async {
+    _rldbRepository.deleteMovie(userId: userId, movie: movie, key: key, index: index, type: type)
         .then(_movieSubject.add);
   }
 

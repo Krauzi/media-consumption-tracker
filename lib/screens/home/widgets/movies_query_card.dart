@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/utils/string_extensions.dart';
 import 'package:toast/toast.dart';
 
@@ -12,8 +13,9 @@ class MoviesQueryCard extends StatefulWidget {
   final Search movie;
   final String userId;
   final int index;
+  final SearchType searchType;
 
-  MoviesQueryCard({this.movie, this.userId, this.index});
+  MoviesQueryCard({this.movie, this.userId, this.index, this.searchType});
 
   @override
   _MoviesQueryCardState createState() => _MoviesQueryCardState();
@@ -90,7 +92,6 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
                     flex: 2,
                     child: Padding(
                       padding: EdgeInsets.only(right: 16.0),
-                      // (widget.movie.bookmark) ? EdgeInsets.only(right: 16.0, top: 8.0, bottom: 8.0):
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -203,16 +204,25 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
   }
 
   void _addMovie() {
-    _rldbBloc.addMovie(widget.userId, widget.movie.imdbID, widget.index);
+    if (widget.searchType == SearchType.MOVIE)
+      _rldbBloc.addMovie(widget.userId, widget.movie.imdbID, widget.index, "movies");
+    else
+      _rldbBloc.addMovie(widget.userId, widget.movie.imdbID, widget.index, "series");
   }
 
   void _editMovie() {
     _movie.finished = _watched;
-    _rldbBloc.editMovie(widget.userId, _movie, _referenceKey, widget.index);
+    if (widget.searchType == SearchType.MOVIE)
+      _rldbBloc.editMovie(widget.userId, _movie, _referenceKey, widget.index, "movies");
+    else
+      _rldbBloc.editMovie(widget.userId, _movie, _referenceKey, widget.index, "series");
   }
 
   void _deleteMovie() {
-    _rldbBloc.deleteMovie(widget.userId, _movie, _referenceKey, widget.index);
+    if (widget.searchType == SearchType.MOVIE)
+      _rldbBloc.deleteMovie(widget.userId, _movie, _referenceKey, widget.index, "movies");
+    else
+      _rldbBloc.deleteMovie(widget.userId, _movie, _referenceKey, widget.index, "series");
   }
 
   void _changeAlignmentBookmarks() {

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_details.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/flight_shuffle_builder.dart';
 import 'package:mediaconsumptiontracker/utils/string_extensions.dart';
@@ -15,8 +16,9 @@ class MovieCard extends StatefulWidget {
 
   final String userId;
   final Movie movie;
+  final SearchType searchType;
 
-  MovieCard({this.userId, this.movie});
+  MovieCard({this.userId, this.movie, this.searchType});
 
   @override
   _MovieCardState createState() => _MovieCardState();
@@ -66,7 +68,8 @@ class _MovieCardState extends State<MovieCard>
         child: InkWell(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                  MovieDetail(movie: widget.movie, userId: widget.userId)));
+                  MovieDetail(movie: widget.movie, userId: widget.userId,
+                    searchType: widget.searchType)));
             },
             child: Padding(
               padding: EdgeInsets.only(left: 16.0),
@@ -163,6 +166,9 @@ class _MovieCardState extends State<MovieCard>
   }
 
   void _editMovie() {
-    _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0);
+    if (widget.searchType == SearchType.MOVIE)
+      _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0, "movies");
+    else
+      _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0, "series");
   }
 }

@@ -1,0 +1,3 @@
+enum SearchType {
+  MOVIE, SERIES
+}

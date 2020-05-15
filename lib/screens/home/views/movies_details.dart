@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
+import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/flight_shuffle_builder.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
 import 'package:mediaconsumptiontracker/utils/double_info_row.dart';
@@ -16,8 +17,9 @@ import 'package:toast/toast.dart';
 class MovieDetail extends StatefulWidget {
   final Movie movie;
   final String userId;
+  final SearchType searchType;
 
-  MovieDetail({this.movie, this.userId});
+  MovieDetail({this.movie, this.userId, this.searchType});
 
   @override
   _MovieDetailState createState() => _MovieDetailState();
@@ -29,11 +31,18 @@ class _MovieDetailState extends State<MovieDetail> {
 
   StreamSubscription _itemEditedSubcription;
 
+  Color _mainColor;
+
   @override
   void initState() {
     super.initState();
 
     _rldbBloc = BlocProvider.getBloc();
+
+    if (widget.searchType == SearchType.MOVIE)
+      _mainColor = applicationColors['pink'];
+    else
+      _mainColor = applicationColors['blueish'];
 
     _itemEditedSubcription = _rldbBloc.movieObservable.listen((response) {
       if (response.length == 0) {
@@ -70,7 +79,7 @@ class _MovieDetailState extends State<MovieDetail> {
               left: 0.0,
               right: 0.0,
               child: Material(
-                color: applicationColors['pink'],
+                color: _mainColor,
                 child: Container(
                   padding: EdgeInsets.only(top: 24.0),
                   child: Row(
@@ -93,7 +102,7 @@ class _MovieDetailState extends State<MovieDetail> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    color: applicationColors['pink'],
+                    color: _mainColor,
                     padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 12.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
@@ -154,7 +163,7 @@ class _MovieDetailState extends State<MovieDetail> {
                           label3: "Rating", text3: widget.movie.imdbRating,
                           fontSize: 20.0, color: applicationColors['black'],
                           cAA: CrossAxisAlignment.center, mAA: MainAxisAlignment.spaceEvenly,),
-                        Divider(height: 28.0, thickness: 1.6, color: applicationColors['pink']),
+                        Divider(height: 28.0, thickness: 1.6, color: _mainColor),
                         SingleRow(label1: "Actors", text1: widget.movie.actors,
                           color: applicationColors['black'], fontSize: 16.0,),
                         SizedBox(height: 28.0),
@@ -201,6 +210,9 @@ class _MovieDetailState extends State<MovieDetail> {
   }
 
   void _editMovie() {
-    _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0);
+    if (widget.searchType == SearchType.MOVIE)
+      _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0, "movies");
+    else
+      _rldbBloc.editMovie(widget.userId, widget.movie, widget.movie.key, 0, "series");
   }
 }
