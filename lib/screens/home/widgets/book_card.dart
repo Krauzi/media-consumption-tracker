@@ -37,10 +37,10 @@ class BookCard extends StatelessWidget {
                   children: <Widget>[
                     Text("Title", style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300)),
                     Text(book.name.toUpperCase(), style: TextStyle(fontSize: 18.0)),
-                    Divider(height: 16.0, thickness: 1.6,),
-                    Text("Title", style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300)),
+                    Divider(height: 16.0, thickness: 0.6),
+                    Text("Author", style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300)),
                     Text(book.author.toUpperCase(), style: TextStyle(fontSize: 18.0)),
-                    Divider(height: 16.0, thickness: 1.6,),
+                    Divider(height: 16.0, thickness: 0.6),
                     Container(
                       child: Row(
                         children: <Widget>[
@@ -75,7 +75,7 @@ class BookCard extends StatelessWidget {
                     book.finished ? Column (
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Divider(height: 16.0, thickness: 1.6),
+                        Divider(height: 16.0, thickness: 0.4),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[

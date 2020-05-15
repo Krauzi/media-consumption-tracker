@@ -39,7 +39,7 @@ class GameCard extends StatelessWidget {
                   children: <Widget>[
                     Text("Title", style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300)),
                     Text(game.name.toUpperCase(), style: TextStyle(fontSize: 18.0)),
-                    Divider(height: 16.0, thickness: 1.6,),
+                    Divider(height: 16.0, thickness: 0.4,),
                     Container(
                       child: Row(
                         children: <Widget>[
@@ -74,7 +74,7 @@ class GameCard extends StatelessWidget {
                     game.finished ? Column (
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Divider(height: 16.0, thickness: 1.6),
+                        Divider(height: 16.0, thickness: 0.4),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[

@@ -133,19 +133,6 @@ class _MoviesResultsState extends State<MoviesResults> {
     );
   }
 
-  Widget _navigateBack() => Positioned (
-    top: 8, left: 8,
-    child: SafeArea(
-      child: Material(
-        color: Colors.transparent,
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: applicationColors['pink'], size: 24.0,),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-    ),
-  );
-
   _getMovies() {
     _rldbBloc.getMovies(
         widget.query.title, widget.query.type,

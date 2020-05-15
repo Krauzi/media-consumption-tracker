@@ -90,7 +90,8 @@ class RldbRepository {
       movie.finished = false;
       movie.time = DateTime.now().millisecondsSinceEpoch * -1;
       reference.set(movie.toJson());
-//      movie.key = reference.key;
+      debugPrint("ANY CALL?");
+
       return [movie, index, reference.key];
     } catch (e) {
       return [];
@@ -99,6 +100,8 @@ class RldbRepository {
 
   Future<List> editMovie({String userId, Movie movie, String key, int index}) async {
     try {
+      if (movie.time > 0 ) movie.time *= -1;
+
       _database.reference().child("db").child(userId)
           .child("movies").child(key).set(movie.toJson());
 

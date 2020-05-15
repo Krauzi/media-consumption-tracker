@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/utils/stream_subscriber_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
@@ -60,7 +57,7 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
             context, duration: Toast.LENGTH_LONG,
             gravity: Toast.BOTTOM);
       } else {
-        Toast.show("Successfull action",
+        Toast.show("Successful action",
             context, duration: Toast.LENGTH_LONG,
             gravity:  Toast.BOTTOM);
       }

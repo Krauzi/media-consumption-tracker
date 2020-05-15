@@ -48,7 +48,7 @@ class _BooksViewState extends State<BooksView> {
           left: 0.0,
           right: 0.0,
           child: AppBar(
-            title: Text("Manage your books"),
+            title: Text("Books"),
             backgroundColor: applicationColors['pink'],
             elevation: 0.0,
             actions: <Widget>[
