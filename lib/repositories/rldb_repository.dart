@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/data/apiclient/movie_client.dart';
 import 'package:mediaconsumptiontracker/data/book.dart';
 import 'package:mediaconsumptiontracker/data/game.dart';

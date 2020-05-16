@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mediaconsumptiontracker/data/book.dart';
 import 'package:mediaconsumptiontracker/data/game.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';

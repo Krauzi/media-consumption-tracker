@@ -11,7 +11,6 @@ import 'package:mediaconsumptiontracker/screens/home/views/books_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/books_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_edit.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/games_view.dart';
-import 'package:mediaconsumptiontracker/screens/home/views/movies_details.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_search.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/movies_view.dart';
 import 'package:mediaconsumptiontracker/screens/home/views/series_view.dart';
