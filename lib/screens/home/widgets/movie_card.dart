@@ -69,7 +69,7 @@ class _MovieCardState extends State<MovieCard>
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
                   MovieDetail(movie: widget.movie, userId: widget.userId,
-                    searchType: widget.searchType)));
+                    searchType: widget.searchType, fromQueryCard: false)));
             },
             child: Padding(
               padding: EdgeInsets.only(left: 16.0),
@@ -80,7 +80,6 @@ class _MovieCardState extends State<MovieCard>
                     flex: 2,
                     child: Padding(
                       padding: EdgeInsets.only(right: 16.0),
-                      // (widget.movie.bookmark) ? EdgeInsets.only(right: 16.0, top: 8.0, bottom: 8.0):
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

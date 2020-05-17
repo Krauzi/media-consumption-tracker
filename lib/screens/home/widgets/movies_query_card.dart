@@ -6,6 +6,8 @@ import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
 import 'package:mediaconsumptiontracker/enums/search_type.dart';
+import 'package:mediaconsumptiontracker/screens/home/views/movies_details.dart';
+import 'package:mediaconsumptiontracker/screens/home/widgets/flight_shuffle_builder.dart';
 import 'package:mediaconsumptiontracker/utils/string_extensions.dart';
 import 'package:toast/toast.dart';
 
@@ -29,6 +31,7 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
   AlignmentGeometry _alignmentWatched = Alignment.centerLeft;
 
   StreamSubscription _itemAddedSubcription;
+  StreamSubscription _getMovieSubcription;
 
   String _referenceKey;
   Movie _movie;
@@ -64,6 +67,14 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
             gravity:  Toast.BOTTOM);
       }
     });
+
+    _getMovieSubcription = _rldbBloc.singleMovieObservable.listen((response) {
+      if (response[1] == widget.index) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+            MovieDetail(movie: response[0], userId: widget.userId,
+                searchType: widget.searchType, fromQueryCard: true)));
+      }
+    });
   }
 
   @override
@@ -71,6 +82,7 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
     super.dispose();
 
     _itemAddedSubcription.cancel();
+    _getMovieSubcription.cancel();
   }
 
   @override
@@ -82,7 +94,9 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(24.0)),
         ),
         child: InkWell(
-            onTap: () {},
+            onTap: () {
+              _rldbBloc.getSingleMovie(widget.movie.imdbID, widget.index);
+            },
             child: Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: Row(
@@ -192,8 +206,10 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
                         constraints: BoxConstraints(
                           minHeight: 150,
                         ),
-                        child: widget.movie.poster != "N/A" ? Image.network(widget.movie.poster, fit: BoxFit.fill):
-                          Image.asset("assets/movies_placeholder.png", fit: BoxFit.fitHeight,),
+                        child: widget.movie.poster != "N/A" ? Image.network(
+                            widget.movie.poster, fit: BoxFit.fill) :
+                        Image.asset("assets/movies_placeholder.png",
+                          fit: BoxFit.fitHeight,)
                       )
                   )
                 ],

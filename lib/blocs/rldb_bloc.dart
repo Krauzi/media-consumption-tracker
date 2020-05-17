@@ -13,13 +13,8 @@ class RldbBloc extends BlocBase {
 
   RldbBloc(this._rldbRepository);
 
-  List<Search> latest;
-
   PublishSubject<bool> _objectEditResponseSubject = PublishSubject();
   Stream<bool> get objectEditResponseObservable => _objectEditResponseSubject.stream;
-
-  BehaviorSubject<Query> _objectsSubject = BehaviorSubject();
-  Stream<Query> get objectsObservable => _objectsSubject.stream;
 
   Future addGame({String userId, Game game}) async {
     _rldbRepository.addGame(userId: userId, game: game)
@@ -94,14 +89,23 @@ class RldbBloc extends BlocBase {
         .then(_movieSubject.add);
   }
 
+  PublishSubject<List> _singleMovieSubject = PublishSubject();
+  Stream<List> get singleMovieObservable => _singleMovieSubject.stream;
+
+  Future getSingleMovie(String id, int index) async {
+    _rldbRepository.getSingleMovie(id, index)
+        .then(_singleMovieSubject.add)
+        .catchError(_singleMovieSubject.addError);
+  }
+
   @override
   void dispose() {
     super.dispose();
     _objectEditResponseSubject.close();
-    _objectsSubject.close();
 
     _movieSubject.close();
     _moviesSubject.close();
     _loadingMoviesSubject.close();
+    _singleMovieSubject.close();
   }
 }

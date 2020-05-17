@@ -18,8 +18,9 @@ class MovieDetail extends StatefulWidget {
   final Movie movie;
   final String userId;
   final SearchType searchType;
+  final bool fromQueryCard;
 
-  MovieDetail({this.movie, this.userId, this.searchType});
+  MovieDetail({this.movie, this.userId, this.searchType, this.fromQueryCard});
 
   @override
   _MovieDetailState createState() => _MovieDetailState();
@@ -44,17 +45,19 @@ class _MovieDetailState extends State<MovieDetail> {
     else
       _mainColor = applicationColors['blueish'];
 
-    _itemEditedSubcription = _rldbBloc.movieObservable.listen((response) {
-      if (response.length == 0) {
-        Toast.show("Could not edit an item",
-            context, duration: Toast.LENGTH_LONG,
-            gravity: Toast.BOTTOM);
-      } else {
-        Toast.show("Item edited successfully",
-            context, duration: Toast.LENGTH_LONG,
-            gravity: Toast.BOTTOM);
-      }
-    });
+    if (widget.fromQueryCard == true ) {
+      _itemEditedSubcription = _rldbBloc.movieObservable.listen((response) {
+        if (response.length == 0) {
+          Toast.show("Could not edit an item",
+              context, duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+        } else {
+          Toast.show("Item edited successfully",
+              context, duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+        }
+      });
+    }
   }
 
   @override
@@ -169,7 +172,7 @@ class _MovieDetailState extends State<MovieDetail> {
                       SingleRow(label1: "Actors", text1: widget.movie.actors,
                         color: applicationColors['black'], fontSize: 16.0,),
                       SizedBox(height: 28.0),
-                      GestureDetector(
+                      widget.fromQueryCard ? Container(): GestureDetector(
                         onTap: () {
                           setState(() {
                             widget.movie.finished = !widget.movie.finished;

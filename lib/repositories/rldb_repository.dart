@@ -96,6 +96,17 @@ class RldbRepository {
     }
   }
 
+  Future<List> getSingleMovie(String id, int index) async {
+    try {
+      Movie movie = await apiClient.getSingleMovie(id, apiKey);
+      movie.finished = false;
+      movie.time = DateTime.now().millisecondsSinceEpoch * -1;
+      return [movie, index];
+    } catch(e) {
+      return [];
+    }
+  }
+
   Future<List> editMovie({String userId, Movie movie, String key, int index,
     String type}) async {
     try {
