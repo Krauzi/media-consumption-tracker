@@ -108,7 +108,8 @@ class _MoviesSearchState extends State<MoviesSearch> {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                      child: Text("Search for a movie", style: TextStyle(
+                      child: Text(widget.searchType == SearchType.MOVIE ? "Search for a movie"
+                          : "Search for a series", style: TextStyle(
                           color: applicationColors['pink'],
                           fontSize: 24.0, fontWeight: FontWeight.w300
                       )),
@@ -222,11 +223,8 @@ class _MoviesSearchState extends State<MoviesSearch> {
     if (!ModalRoute.of(context).isCurrent) return;
 
     QueryData _query;
-    if (widget.searchType == SearchType.SERIES) {
-      _query = QueryData(_movieNameController.text, _currentType.toLowerCase(), _movieYearController.text, 1);
-    } else {
-      _query = QueryData(_movieNameController.text, "movie", _movieYearController.text, 1);
-    }
+    _query = QueryData(_movieNameController.text, _currentType.toLowerCase(), _movieYearController.text, 1);
+
 
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) =>

@@ -142,7 +142,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   FormButton(
                     text: "Sign Up",
-                    color: applicationColors['rose'],
+                    color: applicationColors['blueish'],
                     textColor: applicationColors['white'],
                     onPressed: _onSignUpClick,
                   )

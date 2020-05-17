@@ -123,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   FormButton(
                     text: "login",
-                    color: applicationColors['blueish'],
+                    color: applicationColors['pink'],
                     textColor: applicationColors['white'],
                     onPressed: _onLoginClick,
                   )

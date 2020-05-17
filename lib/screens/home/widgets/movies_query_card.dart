@@ -208,20 +208,21 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
       _rldbBloc.addMovie(widget.userId, widget.movie.imdbID, widget.index, "movies");
     else
       _rldbBloc.addMovie(widget.userId, widget.movie.imdbID, widget.index, "series");
+
   }
 
   void _editMovie() {
     _movie.finished = _watched;
     if (widget.searchType == SearchType.MOVIE)
       _rldbBloc.editMovie(widget.userId, _movie, _referenceKey, widget.index, "movies");
-    else
+    else if (widget.searchType == SearchType.SERIES)
       _rldbBloc.editMovie(widget.userId, _movie, _referenceKey, widget.index, "series");
   }
 
   void _deleteMovie() {
     if (widget.searchType == SearchType.MOVIE)
       _rldbBloc.deleteMovie(widget.userId, _movie, _referenceKey, widget.index, "movies");
-    else
+    else if (widget.searchType == SearchType.SERIES)
       _rldbBloc.deleteMovie(widget.userId, _movie, _referenceKey, widget.index, "series");
   }
 

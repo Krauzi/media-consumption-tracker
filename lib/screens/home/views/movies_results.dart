@@ -125,19 +125,10 @@ class _MoviesResultsState extends State<MoviesResults> {
                               scrollDirection: Axis.vertical,
                               itemCount: _movies.length,
                               itemBuilder: (context, index) {
-                                return MoviesQueryCard(movie: _movies[index], userId: userId, index: index);
+                                return MoviesQueryCard(movie: _movies[index],
+                                    userId: userId, index: index, searchType: widget.searchType,);
                               }
                           ),
-//                          child: AnimatedList(
-//                              controller: _scrollController,
-//                              shrinkWrap: true,
-//                              scrollDirection: Axis.vertical,
-//                              initialItemCount: _movies.length,
-//                              itemBuilder: (context, index, animation) {
-//                                return MoviesQueryCard(movie: _movies[index], userId: userId,
-//                                    index: index, searchType: widget.searchType);
-//                              },
-//                          ),
                         ),
                       ),
                     ]
