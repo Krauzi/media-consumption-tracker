@@ -162,7 +162,7 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
                                   ),
                                 ),
                                 secondChild: Container(),
-                                crossFadeState: (widget.movie.bookmark) ? CrossFadeState.showFirst:
+                                crossFadeState: (widget.movie.bookmark ?? false) ? CrossFadeState.showFirst:
                                 CrossFadeState.showSecond,
                               ),
                               AnimatedAlign(

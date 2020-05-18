@@ -130,13 +130,15 @@ class _HomeScreenState extends State<HomeScreen>
       return CustomFAB(
           icon: Icons.search,
           onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MoviesSearch(searchType: SearchType.MOVIE,)))
+              MaterialPageRoute(builder: (context) => MoviesSearch(
+                searchType: SearchType.MOVIE, userId: userId,)))
       );
     } else {
       return CustomFAB(
           icon: Icons.search,
           onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MoviesSearch(searchType: SearchType.SERIES,)))
+              MaterialPageRoute(builder: (context) => MoviesSearch(
+                searchType: SearchType.SERIES, userId: userId,)))
       );
     }
   }

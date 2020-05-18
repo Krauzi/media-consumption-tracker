@@ -2,17 +2,12 @@ import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
-import 'package:mediaconsumptiontracker/data/query_data.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
 import 'package:mediaconsumptiontracker/enums/search_type.dart';
-import 'package:mediaconsumptiontracker/screens/home/views/movies_results.dart';
-import 'package:mediaconsumptiontracker/screens/home/widgets/process_button.dart';
-import 'package:mediaconsumptiontracker/screens/home/widgets/query_form_field.dart';
+import 'package:mediaconsumptiontracker/screens/home/widgets/movies_query_card.dart';
 import 'package:mediaconsumptiontracker/utils/app_colors.dart';
-import 'package:toast/toast.dart';
+import 'package:mediaconsumptiontracker/utils/debouncer.dart';
 
 class MoviesSearch extends StatefulWidget {
   final String userId;
@@ -27,234 +22,181 @@ class MoviesSearch extends StatefulWidget {
 class _MoviesSearchState extends State<MoviesSearch> {
 
   TextEditingController _movieNameController;
-  TextEditingController _movieYearController;
-
-  List<DropdownMenuItem<String>> _dropDownTypeItems;
-  String _currentType;
-
-  List _types = [];
-
 
   StreamSubscription _moviesSubscription;
   RldbBloc _rldbBloc;
+
+  int _currentPage = 1;
+
+  Color _mainColor;
+  ScrollController _scrollController;
+
+  List<Search> _movies = [];
+  final _debouncer = Debouncer(delay: Duration(milliseconds: 500));
+
+  String _previousmovieNameText = "";
 
   @override
   void initState() {
     super.initState();
     _rldbBloc = BlocProvider.getBloc();
 
-    if (widget.searchType == SearchType.SERIES) {
-      _types = [
-        "Series",
-        "Episode"
-      ];
+    if (widget.searchType == SearchType.MOVIE) {
+      _mainColor = applicationColors['pink'];
     } else {
-      _types = ["Movie"];
+      _mainColor = applicationColors['blueish'];
     }
 
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels - 50 == _scrollController.position.maxScrollExtent - 50) {
+        _currentPage += 1; _getMovies();
+      }
+    });
 
-    _movieNameController = TextEditingController();
-    _movieYearController = TextEditingController();
-    _dropDownTypeItems = getDropDownMenuItems();
-    _currentType = _dropDownTypeItems[0].value;
+    _movieNameController = TextEditingController(text: "");
+    _movieNameController.addListener(_onTextChange);
 
-    _moviesSubscription = _rldbBloc.moviesObservable.listen(_showMovies);
+    _moviesSubscription = _rldbBloc.moviesObservable.listen((queryMovies) {
+      setState(() {  _movies = queryMovies; });
+    });
   }
 
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = new List();
-    for (String type in _types) {
-      items.add(new DropdownMenuItem(value: type, child: new Text(type)));
-    }
-    return items;
+  _onTextChange() {
+    _debouncer.run(() {
+      if (_movieNameController.text != _previousmovieNameText) {
+        _previousmovieNameText = _movieNameController.text;
+        _movies = [];
+        _currentPage = 1;
+
+        if (_movieNameController.text != null || _movieNameController.text != "") {
+          _moviesSubscription.cancel();
+          _moviesSubscription = _rldbBloc.moviesObservable.listen((queryMovies) {
+            setState(() {  _movies = queryMovies; });
+          });
+
+          _getMovies();
+
+        } else {
+          _moviesSubscription.cancel();
+          _moviesSubscription = _rldbBloc.moviesObservable.listen((queryMovies) {
+            setState(() {  _movies = queryMovies; });
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
 
+    _scrollController.dispose();
+    _movieNameController.removeListener(_onTextChange);
     _movieNameController.dispose();
-    _movieYearController.dispose();
     _moviesSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          color: applicationColors['white'],
-        ),
-        child: Stack(
-          children: <Widget>[
-            SingleChildScrollView(
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context);
+        return true as Future<bool>; },
+      child: Scaffold(
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            color: _mainColor,
+            child: SafeArea(
+              child: Stack(
                   children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Material(
-                          color: Colors.transparent,
-                          child: IconButton(
-                            icon: Icon(Icons.arrow_back_ios, color: applicationColors['pink'], size: 24.0,),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-                      child: Text(widget.searchType == SearchType.MOVIE ? "Search for a movie"
-                          : "Search for a series", style: TextStyle(
-                          color: applicationColors['pink'],
-                          fontSize: 24.0, fontWeight: FontWeight.w300
-                      )),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: QueryFormField(label: "Insert title", textController: _movieNameController)
-                    ),
-                    widget.searchType == SearchType.MOVIE ? Container(): Padding(
-                        padding: EdgeInsets.only(left: 18.0, bottom: 6.0, top:  16.0),
-                        child: Text("Select type", style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18.0))
-                    ),
-                    widget.searchType == SearchType.MOVIE ? Container():
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: DropdownButtonFormField(
-                        isExpanded: true,
-                        value: _currentType,
-                        items: _dropDownTypeItems,
-                        onChanged: changedDropDownItem,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(12.0, 2.0, 12.0, 2.0),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: BorderSide(color: Colors.grey[600]),
-                          ),
-                          fillColor: applicationColors['white'],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Column(
                         children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(left: 2.0, bottom: 6.0),
-                              child: Text("Insert year", style: TextStyle(fontWeight: FontWeight.w300, fontSize: 18.0))
-                          ),
-                          TextFormField(
-                            controller: _movieYearController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            style: TextStyle(
-                              color: applicationColors['black'],
-                              fontSize: 15.0,
+                          Expanded(
+                            flex: 0,
+                            child: Material(
+                                color: Colors.transparent,
+                                child: Column(
+                                  children: <Widget> [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: Icon(Icons.arrow_back_ios, color: applicationColors['white'], size: 24.0,),
+                                          onPressed: () => Navigator.pop(context),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 12.0),
+                                          child: Text("Navigate back to search", style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              color: applicationColors['white'],
+                                              fontSize: 20.0
+                                          )),
+                                        )
+                                      ],
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        controller: _movieNameController,
+                                        style: TextStyle(
+                                          color: applicationColors['white'],
+                                          fontSize: 18.0,
+                                        ),
+                                        decoration: InputDecoration(
+                                            hintText: "Query search",
+                                            hintStyle: TextStyle(color: applicationColors['white']),
+                                            border: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: applicationColors['white']),
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: applicationColors['white']),
+                                            ),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: applicationColors['white']),
+                                            )
+                                        ),
+                                      ),
+                                    )
+                                  ]
+                                )
                             ),
-                            validator: (value) => value.isEmpty ? "" : value,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(fontSize: 15.0, color: Colors.grey[600]),
-                              contentPadding: EdgeInsets.fromLTRB(12.0, 6.0, 12.0, 6.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              color: applicationColors['white'],
+                              child: ListView.builder(
+                                  controller: _scrollController,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: _movies.length,
+                                  itemBuilder: (context, index) {
+                                    return  MoviesQueryCard(movie: _movies[index],
+                                      userId: widget.userId, index: index,
+                                      searchType: widget.searchType,);
+                                  }
                               ),
-                              fillColor: applicationColors['white'],
-                              filled: true,
                             ),
                           ),
-                        ],
-                      ),
+                        ]
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 48.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: ProcessButton(
-                              text: "Search",
-                              color: applicationColors['rose'],
-                              textColor: applicationColors['white'],
-                              onPressed: _onSearchClick,
-                              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  ]
               ),
             ),
-            _loadPage
-          ]
-        ),
+          )
       ),
     );
   }
 
-  void changedDropDownItem(String selectedType) {
-    setState(() { _currentType = selectedType; });
-  }
-
-  _onSearchClick() {
-    if(_movieNameController.text != null && _movieNameController.text != "") {
-      _currentType == "All" ? _rldbBloc.getMovies(_movieNameController.text, "", _movieYearController.text, 1):
-      _rldbBloc.getMovies(_movieNameController.text, _currentType.toLowerCase(), _movieYearController.text, 1);
+  _getMovies() {
+    if (widget.searchType == SearchType.MOVIE) {
+      _rldbBloc.getMovies(_movieNameController.text, "movie", "", _currentPage);
     } else {
-      Toast.show("Insert title", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+      _rldbBloc.getMovies(_movieNameController.text, "series", "", _currentPage);
     }
   }
-
-  _showMovies(List<Search> movies) {
-    if (!ModalRoute.of(context).isCurrent) return;
-
-    QueryData _query;
-    _query = QueryData(_movieNameController.text, _currentType.toLowerCase(), _movieYearController.text, 1);
-
-
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) =>
-            MoviesResults(movies: movies, query: _query, searchType: widget.searchType,))
-    ).then((_) {
-      _moviesSubscription.cancel();
-      _moviesSubscription = _rldbBloc.moviesObservable.listen(_showMovies);
-    });
-  }
-
-  Widget get _loadPage => StreamBuilder<bool>(
-    stream: _rldbBloc.loadingMoviesObservable,
-    initialData: false,
-    builder: (context, snapshot) {
-      if(snapshot.data) {
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: applicationColors['white'],
-          ),
-          child: SpinKitDoubleBounce(
-            size: MediaQuery.of(context).size.shortestSide * 0.4,
-            color: applicationColors['pink'],
-          ),
-        );
-      } else {
-        return Container();
-      }
-    },
-  );
 }
