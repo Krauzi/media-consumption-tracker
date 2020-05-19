@@ -175,6 +175,7 @@ class _MoviesSearchState extends State<MoviesSearch> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: _movies.length,
                                   itemBuilder: (context, index) {
+                                    _movies[index].bookmark = false;
                                     return  MoviesQueryCard(movie: _movies[index],
                                       userId: widget.userId, index: index,
                                       searchType: widget.searchType,);

@@ -42,7 +42,6 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
   void initState() {
     super.initState();
 
-    widget.movie.bookmark = false;
     _watched = false;
 
     _rldbBloc = BlocProvider.getBloc();

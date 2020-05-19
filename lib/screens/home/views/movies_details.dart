@@ -63,7 +63,8 @@ class _MovieDetailState extends State<MovieDetail> {
   @override
   void dispose() {
     super.dispose();
-    _itemEditedSubcription.cancel();
+    if (widget.fromQueryCard == true )
+      _itemEditedSubcription.cancel();
   }
 
   @override
