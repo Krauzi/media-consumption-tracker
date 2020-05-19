@@ -24,6 +24,8 @@ class Movie {
   String country;
   @JsonKey(name: 'imdbRating')
   String imdbRating;
+  @JsonKey(name: 'Plot')
+  String plot;
   @JsonKey(name: 'imdbID')
   String imdbID;
   @JsonKey(name: 'Type')
@@ -32,7 +34,7 @@ class Movie {
   int time;
 
   Movie({this.title, this.year, this.runtime, this.genre, this.director,
-    this.actors, this.country, this.poster, this.imdbRating, this.imdbID, this.type});
+    this.actors, this.country, this.poster, this.imdbRating, this.plot, this.imdbID, this.type});
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);
   Map<String, dynamic> toJson() => _$MovieToJson(this);
@@ -48,6 +50,7 @@ class Movie {
         poster = snapshot.value["Poster"],
         country = snapshot.value["Country"],
         imdbRating = snapshot.value["imdbRating"],
+        plot = snapshot.value["Plot"],
         imdbID = snapshot.value["imdbID"],
         type = snapshot.value["Type"],
         finished = snapshot.value["finished"],

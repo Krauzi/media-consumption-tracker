@@ -141,6 +141,7 @@ class _MoviesSearchState extends State<MoviesSearch> {
                                       padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
                                       child: TextFormField(
                                         autofocus: true,
+
                                         controller: _movieNameController,
                                         style: TextStyle(
                                           color: applicationColors['white'],

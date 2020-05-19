@@ -17,6 +17,7 @@ Movie _$MovieFromJson(Map<String, dynamic> json) {
     country: json['Country'] as String,
     poster: json['Poster'] as String,
     imdbRating: json['imdbRating'] as String,
+    plot: json['Plot'] as String,
     imdbID: json['imdbID'] as String,
     type: json['Type'] as String,
   )
@@ -36,6 +37,7 @@ Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
       'Poster': instance.poster,
       'Country': instance.country,
       'imdbRating': instance.imdbRating,
+      'Plot': instance.plot,
       'imdbID': instance.imdbID,
       'Type': instance.type,
       'finished': instance.finished,
