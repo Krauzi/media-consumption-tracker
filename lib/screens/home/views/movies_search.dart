@@ -141,7 +141,6 @@ class _MoviesSearchState extends State<MoviesSearch> {
                                       padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
                                       child: TextFormField(
                                         autofocus: true,
-
                                         controller: _movieNameController,
                                         style: TextStyle(
                                           color: applicationColors['white'],
@@ -176,7 +175,8 @@ class _MoviesSearchState extends State<MoviesSearch> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: _movies.length,
                                   itemBuilder: (context, index) {
-                                    _movies[index].bookmark = false;
+                                    if (_movies[index].bookmark == null)
+                                      _movies[index].bookmark = false;
                                     return  MoviesQueryCard(movie: _movies[index],
                                       userId: widget.userId, index: index,
                                       searchType: widget.searchType,);

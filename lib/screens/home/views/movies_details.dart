@@ -116,7 +116,7 @@ class _MovieDetailState extends State<MovieDetail> {
                               color: applicationColors['white'])
                           )
                       ),
-                      SizedBox(height: 24.0),
+                      SizedBox(height: 20.0),
                       Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
@@ -165,16 +165,16 @@ class _MovieDetailState extends State<MovieDetail> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       SingleRow(label1: "Plot", text1: widget.movie.plot,
-                        color: applicationColors['black'], fontSize: 17.0),
-                      Divider(height: 28.0, thickness: 1.6, color: _mainColor),
+                        color: applicationColors['black'], fontSize: 16),
+                      Divider(height: 26.0, thickness: 1.6, color: _mainColor),
                       TripleRow(label1: "Runtime", text1: widget.movie.runtime,
                         label2: "Release year", text2: widget.movie.year,
                         label3: "Rating", text3: widget.movie.imdbRating,
-                        fontSize: 20.0, color: applicationColors['black'],
+                        fontSize: 20, color: applicationColors['black'],
                         cAA: CrossAxisAlignment.center, mAA: MainAxisAlignment.spaceEvenly,),
-                      Divider(height: 28.0, thickness: 1.6, color: _mainColor),
+                      Divider(height: 26.0, thickness: 1.6, color: _mainColor),
                       SingleRow(label1: "Actors", text1: widget.movie.actors,
-                        color: applicationColors['black'], fontSize: 17.0),
+                        color: applicationColors['black'], fontSize: 16),
                       SizedBox(height: 28.0),
                       widget.fromQueryCard ? Container(): GestureDetector(
                         onTap: () {
