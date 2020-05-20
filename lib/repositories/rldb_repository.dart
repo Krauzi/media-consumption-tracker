@@ -126,7 +126,7 @@ class RldbRepository {
     try {
       _database.reference().child("db").child(userId)
           .child(type).child(key).remove();
-      return [movie, index, key];
+      return [movie, index, key, true];
     } catch (e) {
       return [];
     }

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
 import 'package:mediaconsumptiontracker/enums/search_type.dart';
@@ -43,12 +45,13 @@ class _MovieCardState extends State<MovieCard>
             context, duration: Toast.LENGTH_LONG,
             gravity: Toast.BOTTOM);
       } else {
-        Toast.show("Item edited successfully",
-            context, duration: Toast.LENGTH_LONG,
-            gravity: Toast.BOTTOM);
+        if (response.length != 4 && response[3] != true) {
+          Toast.show("Item edited successfully",
+              context, duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+        }
       }
     });
-
   }
 
   @override
@@ -151,8 +154,12 @@ class _MovieCardState extends State<MovieCard>
                       child: Hero (
                         tag: "heroCard${widget.movie.imdbID}",
                         flightShuttleBuilder: flightShuttleBuilder,
-                        child: widget.movie.poster != "N/A" ? Image.network(
-                            widget.movie.poster, fit: BoxFit.fill) :
+                        child: widget.movie.poster != "N/A" ?
+                        CachedNetworkImage(
+                          imageUrl: widget.movie.poster,
+                          fit: BoxFit.fitHeight,
+                          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) => Icon(Icons.error)):
                         Image.asset("assets/movies_placeholder.png",
                           fit: BoxFit.fitHeight,)
                       )

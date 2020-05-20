@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
+import 'package:mediaconsumptiontracker/data/movie.dart';
 import 'package:mediaconsumptiontracker/data/search.dart';
 import 'package:mediaconsumptiontracker/enums/search_type.dart';
 import 'package:mediaconsumptiontracker/screens/home/widgets/movies_query_card.dart';
@@ -27,14 +29,17 @@ class _MoviesSearchState extends State<MoviesSearch> {
   RldbBloc _rldbBloc;
 
   int _currentPage = 1;
+  Query query;
 
   Color _mainColor;
   ScrollController _scrollController;
 
   List<Search> _movies = [];
   final _debouncer = Debouncer(delay: Duration(milliseconds: 500));
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   String _previousmovieNameText = "";
+  String type = "";
 
   @override
   void initState() {
@@ -43,8 +48,10 @@ class _MoviesSearchState extends State<MoviesSearch> {
 
     if (widget.searchType == SearchType.MOVIE) {
       _mainColor = applicationColors['pink'];
+      type = "movies";
     } else {
       _mainColor = applicationColors['blueish'];
+      type = "series";
     }
 
     _scrollController = ScrollController();
@@ -76,7 +83,6 @@ class _MoviesSearchState extends State<MoviesSearch> {
           });
 
           _getMovies();
-
         } else {
           _moviesSubscription.cancel();
           _moviesSubscription = _rldbBloc.moviesObservable.listen((queryMovies) {
@@ -169,7 +175,7 @@ class _MoviesSearchState extends State<MoviesSearch> {
                             flex: 1,
                             child: Container(
                               color: applicationColors['white'],
-                              child: ListView.builder(
+                              child: _movies.length != 0 ? ListView.builder(
                                   controller: _scrollController,
                                   shrinkWrap: true,
                                   scrollDirection: Axis.vertical,
@@ -181,7 +187,17 @@ class _MoviesSearchState extends State<MoviesSearch> {
                                       userId: widget.userId, index: index,
                                       searchType: widget.searchType,);
                                   }
-                              ),
+                              ): Center(
+                                  child: Text(
+                                    "No results.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 26.0,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.grey[500]
+                                    ),
+                                  )
+                              )
                             ),
                           ),
                         ]

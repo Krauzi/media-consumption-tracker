@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
 import 'package:mediaconsumptiontracker/data/movie.dart';
@@ -205,9 +206,13 @@ class _MoviesQueryCardState extends State<MoviesQueryCard> {
                         constraints: BoxConstraints(
                           minHeight: 150,
                         ),
-                        child: widget.movie.poster != "N/A" ? Image.network(
-                            widget.movie.poster, fit: BoxFit.fill) :
-                        Image.asset("assets/movies_placeholder.png",
+                        child: widget.movie.poster != "N/A" ?
+                          CachedNetworkImage(
+                              imageUrl: widget.movie.poster,
+                              fit: BoxFit.fitHeight,
+                              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => Icon(Icons.error)):
+                          Image.asset("assets/movies_placeholder.png",
                           fit: BoxFit.fitHeight,)
                       )
                   )

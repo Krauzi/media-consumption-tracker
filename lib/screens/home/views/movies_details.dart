@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumptiontracker/blocs/rldb_bloc.dart';
@@ -125,8 +126,12 @@ class _MovieDetailState extends State<MovieDetail> {
                                 tag: "heroCard${widget.movie.imdbID}",
                                 flightShuttleBuilder: flightShuttleBuilder,
                                 child:
-                                widget.movie.poster != "N/A" ? Image.network(
-                                    widget.movie.poster, fit: BoxFit.fitHeight):
+                                widget.movie.poster != "N/A" ?
+                                CachedNetworkImage(
+                                    imageUrl: widget.movie.poster,
+                                    fit: BoxFit.fitHeight,
+                                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                    errorWidget: (context, url, error) => Icon(Icons.error)):
                                 Image.asset("assets/movies_placeholder.png",
                                   fit: BoxFit.fitHeight,)
                               )
